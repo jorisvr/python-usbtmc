@@ -79,9 +79,9 @@ def parse_visa_resource_string(resource_string):
     # USB::1234::5678::SERIAL::INSTR
     # USB0::0x1234::0x5678::INSTR
     # USB0::0x1234::0x5678::SERIAL::INSTR
-    m = re.match('^(?P<prefix>(?P<type>USB)\d*)(::(?P<arg1>[^\s:]+))'
-        '(::(?P<arg2>[^\s:]+(\[.+\])?))(::(?P<arg3>[^\s:]+))?'
-        '(::(?P<suffix>INSTR))$', resource_string, re.I)
+    m = re.match(r'^(?P<prefix>(?P<type>USB)\d*)(::(?P<arg1>[^\s:]+))'
+                 r'(::(?P<arg2>[^\s:]+(\[.+\])?))(::(?P<arg3>[^\s:]+))?'
+                 r'(::(?P<suffix>INSTR))$', resource_string, re.I)
 
     if m is not None:
         return dict(
