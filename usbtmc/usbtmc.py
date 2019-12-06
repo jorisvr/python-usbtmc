@@ -295,6 +295,12 @@ class Instrument(object):
         # interaction with the device.
         self.force_reconfigure = True
 
+        # Enable clearing Bulk-IN endpoint halt during initialization.
+        # This is not strictly necessary, but it helps to reset the DATA0/DATA1
+        # toggle state for some devices which do not correctly reset
+        # the toggle state during set_configuration().
+        self.force_clear_bulk_in = True
+
         resource = None
 
         # process arguments
@@ -879,6 +885,8 @@ class Instrument(object):
                     break
             # Clear halt condition
             self.bulk_out_ep.clear_halt()
+            if self.force_clear_bulk_in:
+                self.bulk_in_ep.clear_halt()
         else:
             raise UsbtmcException("Clear failed", 'clear')
 
