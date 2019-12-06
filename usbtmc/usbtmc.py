@@ -287,6 +287,14 @@ class Instrument(object):
         self.rigol_quirk = False
         self.rigol_quirk_ieee_block = False
 
+        # Enable always calling set_configuration() while opening the device,
+        # even if the correct configuration was already active. This is useful
+        # because set_configuration() resets the DATA0/DATA1 toggle state.
+        # If the data toggle state becomes mismatched between host and device,
+        # data will be lost, typically causing timeouts during the first
+        # interaction with the device.
+        self.force_reconfigure = True
+
         resource = None
 
         # process arguments
@@ -439,7 +447,9 @@ class Instrument(object):
             # ignore exception if configuration is not set
             pass
 
-        if self.old_cfg is not None and self.old_cfg.bConfigurationValue == self.cfg.bConfigurationValue:
+        if (self.old_cfg is not None
+                and self.old_cfg.bConfigurationValue == self.cfg.bConfigurationValue
+                and not self.force_reconfigure):
             # already set to correct configuration
 
             # release kernel driver on USBTMC interface
